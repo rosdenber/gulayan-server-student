@@ -74,6 +74,41 @@ class PlantController extends Controller
   public function update(Request $request, PlantModel $plantController)
   {
     //TODO : implement update record functionality
+    try {
+      // Validate the incoming request (all fields optional for partial updates)
+      $validated = $request->validate([
+        'name' => 'sometimes|required|string|max:255',
+        'variety' => 'sometimes|required|string|max:255',
+        'notes' => 'nullable|string',
+        'date_planted' => 'sometimes|required|date',
+        'seedling_count' => 'sometimes|required|integer|min:1',
+        'batch_name' => 'sometimes|required|string|max:255',
+        'starting_fund' => 'sometimes|required|numeric|min:0',
+        'seedling_source' => 'sometimes|required|string|max:255',
+      ]);
+
+      // Update the plant record with validated data
+      $plantController->update($validated);
+
+      // Return success response with the updated plant
+      return response()->json([
+        'message' => 'Plant record updated successfully',
+        'data' => $plantController,
+      ], 200);
+
+    } catch (ValidationException $e) {
+      // Return validation errors
+      return response()->json([
+        'message' => 'Validation failed',
+        'errors' => $e->errors(),
+      ], 422);
+    } catch (\Exception $e) {
+      // Return error response
+      return response()->json([
+        'message' => 'Failed to update plant record',
+        'error' => $e->getMessage(),
+      ], 500);
+    }
   }
 
   /**
