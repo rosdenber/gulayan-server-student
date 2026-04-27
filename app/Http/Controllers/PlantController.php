@@ -14,9 +14,21 @@ class PlantController extends Controller
    */
   public function index()
   {
-    //TODO : implement load all the records
-    //TODO : implement pagination when loading all the records
-  }
+    try {
+      $plants = PlantModel::all();
+
+      return response()->json([
+        'message' => 'Plant records retrieved successfully',
+        'data' => $plants,
+      ], 200);
+    } catch (\Exception $e) {
+      return response()->json([
+        'message' => 'Failed to retrieve plant records',
+        'error' => $e->getMessage(),
+      ], 500);
+    }
+  // TODO : implement pagination when loading all the records
+    }
 
   /**
    * Store a newly created resource in storage.
