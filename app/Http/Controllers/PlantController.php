@@ -12,10 +12,11 @@ class PlantController extends Controller
   /**
    * Display a listing of the resource.
    */
-  public function index()
+  public function index(Request $request)
   {
     try {
-      $plants = PlantModel::all();
+      $perPage = $request->query('per_page', 15);
+      $plants = PlantModel::paginate($perPage);
 
       return response()->json([
         'message' => 'Plant records retrieved successfully',
@@ -27,8 +28,7 @@ class PlantController extends Controller
         'error' => $e->getMessage(),
       ], 500);
     }
-  // TODO : implement pagination when loading all the records
-    }
+  }
 
   /**
    * Store a newly created resource in storage.
