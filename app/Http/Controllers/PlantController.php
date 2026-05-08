@@ -75,17 +75,19 @@ class PlantController extends Controller
   /**
    * Display the specified resource.
    */
-  public function show(PlantModel $plantController)
+  public function show(PlantModel $plant)
   {
-    //
+    return response()->json([
+      'message' => 'Plant record retrieved successfully',
+      'data' => $plant,
+    ], 200);
   }
 
   /**
    * Update the specified resource in storage.
    */
-  public function update(Request $request, PlantModel $plantController)
+  public function update(Request $request, PlantModel $plant)
   {
-    //TODO : implement update record functionality
     try {
       // Validate the incoming request (all fields optional for partial updates)
       $validated = $request->validate([
@@ -100,12 +102,12 @@ class PlantController extends Controller
       ]);
 
       // Update the plant record with validated data
-      $plantController->update($validated);
+      $plant->update($validated);
 
-      // Return success response with the updated plant
+      // Return success response with the freshly loaded plant
       return response()->json([
         'message' => 'Plant record updated successfully',
-        'data' => $plantController,
+        'data' => $plant->fresh(),
       ], 200);
 
     } catch (ValidationException $e) {
